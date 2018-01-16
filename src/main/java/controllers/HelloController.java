@@ -24,7 +24,7 @@ public class HelloController {
 	@RequestMapping("/hello")
 	public String hello() {
 		log.warn("just clicked on hello page");
-		return "Greetings from Spring Boot! 2";
+		return "Greetings !!";
 	}
 
 	public static String getToday() {
