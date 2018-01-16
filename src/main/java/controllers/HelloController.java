@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HelloController {
-	
-	
+
 	private static final Logger log = LoggerFactory.getLogger(Application.class);
 
 	@RequestMapping("/")
@@ -28,14 +27,20 @@ public class HelloController {
 		return "Greetings from Spring Boot! 2";
 	}
 
+	public static String getToday() {
+		Date now = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("YYYY/MM/DD");
+
+		return sdf.format(now);
+
+	}
+
 	@RequestMapping("/date")
 	public String getDate() {
-		
+
 		log.error("just clicked on date page");
-		
-		Date now = new Date();
-		SimpleDateFormat sdf = new SimpleDateFormat("HH:MM/DD");
-		
-		return "hello it's : " + sdf.format(now);
+		String now = getToday();
+
+		return "hello it's : " + now;
 	}
 }
