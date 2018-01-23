@@ -2,21 +2,32 @@ package controllers;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 import main.Application;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import entities.User;
 
 @RestController
 public class HelloController {
 
+	HashMap<Long, User> userList = new HashMap<Long, User>();
+
 	private static final Logger log = LoggerFactory.getLogger(Application.class);
+
+	private final AtomicLong counter = new AtomicLong();
 
 	/**
 	 * fonction liée a la requete http '/' et qui renvoie le message "Greetings from Spring Boot!"
+	 * 
 	 * @return la chaine de caractères "Greetings from Spring Boot!"
 	 */
 	@RequestMapping("/")
@@ -28,6 +39,7 @@ public class HelloController {
 
 	/**
 	 * fonction liée a la requete http '/hello' et qui renvoie le message "Greetings from Spring Boot! 2"
+	 * 
 	 * @return la chaine de caractères "Greetings from Spring Boot! 2"
 	 */
 	@RequestMapping("/hello")
@@ -65,4 +77,60 @@ public class HelloController {
 
 		return "hello it's : " + now;
 	}
+
+	/**
+	 * fonction qui simule la requetes http POST en créant un objet de type User dont les attribus sont passé en paramétre
+	 * 
+	 * @param name
+	 * @param age
+	 * @return user 
+	 */
+	@RequestMapping(value = "/user", method = RequestMethod.POST)
+	public User postUser(@RequestParam(value = "name") String name, @RequestParam(value = "age") int age) {
+		long tmp = counter.incrementAndGet();
+		User u = new User(tmp, name, age);
+		userList.put(tmp, u);
+		return u;
+	}
+
+	/**
+	 * fonction qui simule la requetes http GET en retournant un objet de type User
+	 * 
+	 * @param id
+	 * @return user 
+	 */
+	@RequestMapping(value = "/user", method = RequestMethod.GET)
+	public User getUser(@RequestParam(value = "id") long id) {
+		if (userList.containsKey(id)) {
+			return userList.get(id);
+		}
+		return null;
+	}
+
+	/**
+	 * fonction qui simule la requetes http PUT en modifiant un objet de type user dont les attribus sont passé en paramétre
+	 * 
+	 * @param id
+	 * @param name
+	 * @param age
+	 * @return User
+	 */
+	@RequestMapping(value = "/user", method = RequestMethod.PUT)
+	public User putUser(@RequestParam(value = "id") long id, @RequestParam(value = "name") String name, @RequestParam(value = "age") int age) {
+		userList.get(id).setName(name);
+		userList.get(id).setAge(age);
+		return userList.get(id);
+	}
+
+	/**
+	 * fonction qui simule la requetes http PUT en supprimant un objet de type user dont les attribus sont passé en paramétre
+	 * @param id
+	 * @return userList
+	 */
+	@RequestMapping(value = "/user", method = RequestMethod.DELETE)
+	public HashMap<Long, User> deleteUser(@RequestParam(value = "id") long id) {
+		userList.remove(id);
+		return userList;
+	}
+
 }
