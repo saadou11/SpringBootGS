@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
  * 
  */
 @SpringBootApplication
-@ComponentScan(basePackages = { "controllers"})
+@ComponentScan(basePackages = { "controllers","entities"})
 public class Application {
 
 	public static void main(String[] args) {
