@@ -3,17 +3,21 @@ package controllers;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import main.Application;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import repositories.CustomerRepository;
+import entities.Customer;
 import entities.User;
 
 @RestController
@@ -24,6 +28,9 @@ public class HelloController {
 	private static final Logger log = LoggerFactory.getLogger(Application.class);
 
 	private final AtomicLong counter = new AtomicLong();
+	
+	@Autowired
+	CustomerRepository custumRepository;
 
 	/**
 	 * fonction liée a la requete http '/' et qui renvoie le message "Greetings from Spring Boot!"
@@ -131,6 +138,25 @@ public class HelloController {
 	public HashMap<Long, User> deleteUser(@RequestParam(value = "id") long id) {
 		userList.remove(id);
 		return userList;
+	}
+	
+	@RequestMapping(value="/CustomerId")
+	public Customer findCustomer(@RequestParam(value="id") String id){
+		
+		Customer c = custumRepository.findOne(Long.valueOf(id));
+		log.info("FROM CONTROLLER :"+c.toString());
+		
+		return c;
+	}
+	@RequestMapping(value="/ListCustomerId")
+	public List<Customer> findListCustomerByLastName(@RequestParam(value="LastName") String lastName){
+		return custumRepository.findByLastName(lastName);
+	}
+	
+	@RequestMapping(value = "/AddCustomer", method = RequestMethod.POST)
+	public List<Customer> postCustomer(@RequestParam(value = "LastName") String lastName, @RequestParam(value = "FirstName") String FirstName) {
+		custumRepository.save(new Customer(lastName,FirstName));
+		return custumRepository.findAll();
 	}
 
 }
