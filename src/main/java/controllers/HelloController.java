@@ -53,7 +53,7 @@ public class HelloController {
 	public String hello() {
 		// l'instruction suivante sert seulment à tester les logs (peut étre utile plus tard)
 		log.warn("just clicked on hello page");
-		return "Greetings from Spring Boot! 2";
+		return "Greetings !!";
 	}
 
 	/**
